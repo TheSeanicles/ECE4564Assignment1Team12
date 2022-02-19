@@ -8,7 +8,7 @@ import socket
 import os
 from _thread import *
 
-with open("config.yml", "r") as ymlfile:
+with open("/home/pi/ECE4564Assignment1Team12/config.yml", "r") as ymlfile:
     cfg = yaml.safe_load(ymlfile)
 
 ServerSocket = socket.socket()
