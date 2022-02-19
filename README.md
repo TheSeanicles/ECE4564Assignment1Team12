@@ -18,6 +18,11 @@ reload systemd daemon
 sudo systemctl daemon-reload
 ```
 
+enable service
+```
+sudo systemctl enable assignment1Server.service
+```
+
 start service
 ```
 sudo systemctl start assignment1Server.service
