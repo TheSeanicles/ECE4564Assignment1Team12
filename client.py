@@ -3,11 +3,15 @@ from cryptography.fernet import Fernet
 import hashlib
 import socket
 import pickle
+import yaml
 
-HOST = 'spacklabs.com'
-PORT = 5555
+with open("config.yml", "r") as ymlfile:
+    cfg = yaml.safe_load(ymlfile)
 
-client = tw.Client(bearer_token='AAAAAAAAAAAAAAAAAAAAAMGmZQEAAAAA1ZjNa%2FrNOj%2FY7zO%2BgaGRDtGWiuQ%3DCPKlyo45Xmrzp8HRjYzPubKz2dxFT0fzqlxdQnNGB3XphjCnpg')
+HOST = cfg["client"]["host"]
+PORT = cfg["client"]["port"]
+
+client = tw.Client(bearer_token=cfg["client"]["bearer_token"])
 
 query = '#ECE4564T12 -is:retweet'
 
