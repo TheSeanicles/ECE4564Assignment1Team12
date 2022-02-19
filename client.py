@@ -4,13 +4,20 @@ import hashlib
 import socket
 import pickle
 import yaml
+import time
 
 with open("config.yml", "r") as ymlfile:
     cfg = yaml.safe_load(ymlfile)
 
+ClientSocket = socket.socket()
 host = cfg["client"]["host"]
 port = cfg["client"]["port"]
 socketSize = cfg["client"]["socketSize"]
+try:
+    ClientSocket.connect((host, port))
+    print('[Client ' + time.time() + '] -- Connecting to ' + host + ' on port ' + str(port))
+except socket.error as e:
+    print(str(e))
 
 client = tw.Client(bearer_token=cfg["client"]["bearer_token"])
 
@@ -19,13 +26,11 @@ query = '#ECE4564T12 -is:retweet'
 # Name and path of the file where you want the Tweets written to
 file_name = 'tweets.txt'
 
-ClientSocket = socket.socket()
 for tweet in tw.Paginator(client.search_recent_tweets, query=query,tweet_fields=['context_annotations', 'created_at'], max_results=100).flatten(limit=1000):
     tweetval = tweet.text
     refinedtweetval1 = tweetval.replace('#ECE4564T12 ', '')#these 3 remove the hashtag part and any leftover whitespaces
     refinedtweetval2 = refinedtweetval1.replace(' #ECE4564T12', '')
     print(refinedtweetval2)
-    # Don't think this conversion is needed as it is done by line ClientSocket.send(str.encode(Input))
     # key = Fernet.generate_key()
     # f = Fernet(key)
     # b = bytes(refinedtweetval2, 'utf-8')
@@ -35,10 +40,6 @@ for tweet in tw.Paginator(client.search_recent_tweets, query=query,tweet_fields=
     # sendlist = [key, token, hashy.hexdigest().encode('utf-8')]
     # senddata = pickle.dumps(sendlist)
     print('Waiting for connection')
-    try:
-        ClientSocket.connect((host, port))
-    except socket.error as e:
-        print(str(e))
     Response = ClientSocket.recv(socketSize)
     Input = refinedtweetval2
     ClientSocket.send(str.encode(Input))
