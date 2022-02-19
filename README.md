@@ -28,3 +28,18 @@ start service
 ```
 sudo systemctl start assignment1Server.service
 ```
+
+config.yml needs created following exampleconfig.yml format
+
+```
+server:
+  host: 127.0.0.1
+  port: 5555
+  app_id:
+  socketSize: 2048
+client:
+  host: 127.0.0.1
+  port: 5555
+  bearer_token: 
+  socketSize: 1024
+```
