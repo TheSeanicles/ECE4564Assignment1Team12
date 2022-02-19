@@ -7,10 +7,11 @@ copy assignment1Server.service to /etc/systemd/system
 cp assignment1Server.service /etc/systemd/system
 ```
 
-install wolframalpha python3 library
+install wolframalpha and yaml python3 library
 ```
 sudo apt install python3-pip
 pip3 install wolframalpha
+pip3 install yaml
 ```
 
 reload systemd daemon
