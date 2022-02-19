@@ -1,0 +1,10 @@
+[Unit]
+Description=Service for assignment1 server.py
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /home/pi/ECE4564Assignment1Server/server.py
+
+[Install]
+WantedBy=multi-user.target

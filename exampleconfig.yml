@@ -1,0 +1,9 @@
+server:
+  host: 127.0.0.1
+  port: 5555
+  app_id:
+  socketSize: 2048
+client:
+  host: 127.0.0.1
+  port: 5555
+  socketSize: 1024
