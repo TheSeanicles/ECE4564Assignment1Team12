@@ -10,8 +10,8 @@ cp assignment1Server.service /etc/systemd/system
 install wolframalpha and yaml python3 library
 ```
 sudo apt install python3-pip
-pip3 install wolframalpha
-pip3 install pyyaml
+sudo pip3 install wolframalpha
+sudo pip3 install pyyaml
 ```
 
 reload systemd daemon
