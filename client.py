@@ -13,6 +13,16 @@ ClientSocket = socket.socket()
 host = cfg["client"]["host"]
 port = cfg["client"]["port"]
 socketSize = cfg["client"]["socketSize"]
+
+if len(sys.argv) > 1:
+    for argument in sys.argv:
+        if str(argument) == '-sp':
+            pass
+            port = sys.argv[sys.argv.index(argument) + 1]
+        elif str(argument) == '-z':
+            pass
+            socketSize = sys.argv[sys.argv.index(argument) + 1]
+
 try:
     ClientSocket.connect((host, port))
     print('[Client ' + str(time.time()) + '] -- Connecting to ' + host + ' on port ' + str(port))
@@ -33,21 +43,14 @@ for tweet in tw.Paginator(client.search_recent_tweets, query=query,tweet_fields=
     refinedtweetval2 = refinedtweetval1.replace(' #ECE4564T12', '')
     print('[Client ' + str(time.time()) + '] -- New question found: ' + refinedtweetval2)
 
-    key = Fernet.generate_key()
+    key = Fernet.generate_key() # encrypt key
     f = Fernet(key)
-    b = bytes(refinedtweetval2, 'utf-8')
-    token = f.encrypt(b)
-    hashy = hashlib.md5(token)
-    print(hashy.hexdigest().encode('utf-8')) #b'473f3046b669911ef4d936e03b02e16a'
-    sendlist = [key, token, hashy.hexdigest().encode('utf-8')]
-    senddata = pickle.dumps(sendlist)
-
-    print(key) #b'pS8RfDNRH2LF8L-fkM_kz3z-oX2iNxlrsRjoeIDi7vE='
-    print(f) #<cryptography.fernet.Fernet object at 0x7f1e1ea34588>
-    print(b) #b'what is a test?'
-    print(token) #b'gAAAAABiEXepDJEnLe80cNqX0-XdPi1_jupNw3U4HgqP_DjkayeNfptUQyU7IjeXFqPMzlx2ty7hl_xZCPE2TEFD-BBJrRJoCw=='
-    print(sendlist) #[b'pS8RfDNRH2LF8L-fkM_kz3z-oX2iNxlrsRjoeIDi7vE=', b'gAAAAABiEXepDJEnLe80cNqX0-XdPi1_jupNw3U4HgqP_DjkayeNfptUQyU7IjeXFqPMzlx2ty7hl_xZCPE2TEFD-BBJrRJoCw==', b'473f3046b669911ef4d936e03b02e16a']
-    print(senddata) #b'\x80\x03]q\x00(C,pS8RfDNRH2LF8L-fkM_kz3z-oX2iNxlrsRjoeIDi7vE=q\x01CdgAAAAABiEXepDJEnLe80cNqX0-XdPi1_jupNw3U4HgqP_DjkayeNfptUQyU7IjeXFqPMzlx2ty7hl_xZCPE2TEFD-BBJrRJoCw==q\x02C 473f3046b669911ef4d936e03b02e16aq\x03e.'
+    b = bytes(refinedtweetval2, 'utf-8') #key
+    token = f.encrypt(b) #encrypted b
+    hashy = hashlib.md5(token) #md5 checksum
+    print(hashy.hexdigest().encode('utf-8')) #print checksum
+    sendlist = [key, token, hashy.hexdigest().encode('utf-8')] #
+    senddata = pickle.dumps(sendlist) #dumps sendlist
 
     print('Waiting for connection')
     Response = ClientSocket.recv(socketSize)

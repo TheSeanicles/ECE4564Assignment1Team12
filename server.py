@@ -8,16 +8,29 @@ import socket
 import os
 from _thread import *
 import time
+import sys
 
 with open("config.yml", "r") as ymlfile:
     cfg = yaml.safe_load(ymlfile)
-
 ServerSocket = socket.socket()
 host = cfg["server"]["host"]
 port = cfg["server"]["port"]
 app_id = cfg["server"]["app_id"]
 socketSize = cfg["server"]["socketSize"]
 ThreadCount = 0
+
+if len(sys.argv) > 1:
+    for argument in sys.argv:
+        if str(argument) == '-sip':
+            pass
+            host = sys.argv[sys.argv.index(argument) + 1]
+        elif str(argument) == '-sp':
+            pass
+            port = sys.argv[sys.argv.index(argument) + 1]
+        elif str(argument) == '-z':
+            pass
+            socketSize = sys.argv[sys.argv.index(argument) + 1]
+
 try:
     ServerSocket.bind((host, port))
     print('[Server ' + str(time.time()) + '] -- Created socket at ' + host + ' on port ' + str(port))
