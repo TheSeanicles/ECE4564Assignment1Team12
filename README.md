@@ -12,6 +12,7 @@ install wolframalpha and yaml python3 library
 sudo apt install python3-pip
 sudo pip3 install wolframalpha
 sudo pip3 install pyyaml
+sudo pip3 install tweepy
 ```
 
 reload systemd daemon
