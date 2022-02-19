@@ -25,7 +25,7 @@ for tweet in tw.Paginator(client.search_recent_tweets, query=query,tweet_fields=
     refinedtweetval1 = tweetval.replace('#ECE4564T12 ', '')#these 3 remove the hashtag part and any leftover whitespaces
     refinedtweetval2 = refinedtweetval1.replace(' #ECE4564T12', '')
     print(refinedtweetval2)
-    # Don't think this conversion is needed
+    # Don't think this conversion is needed as it is done by line ClientSocket.send(str.encode(Input))
     # key = Fernet.generate_key()
     # f = Fernet(key)
     # b = bytes(refinedtweetval2, 'utf-8')
