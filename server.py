@@ -9,7 +9,7 @@ import os
 from _thread import *
 
 with open("config.yml", "r") as ymlfile:
-    cfg = yaml.load(ymlfile)
+    cfg = yaml.safe_load(ymlfile)
 
 ServerSocket = socket.socket()
 host = cfg["server"]["host"]
