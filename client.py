@@ -52,11 +52,11 @@ for tweet in tw.Paginator(client.search_recent_tweets, query=query,tweet_fields=
     # print(hashy.hexdigest().encode('utf-8')) #print checksum
     sendlist = [key, token, hashy.hexdigest().encode('utf-8')] #
     senddata = pickle.dumps(sendlist) #dumps sendlist
+    ClientSocket.send(senddata)
 
-    print('Waiting for connection')
+    # print('Waiting for connection')
     Response = ClientSocket.recv(socketSize)
-    Input = refinedtweetval2
-    ClientSocket.send(str.encode(Input))
-    Response = ClientSocket.recv(1024)
+    # Input = refinedtweetval2
+    # ClientSocket.send(str.encode(Input))
     print(Response.decode('utf-8'))
     ClientSocket.close()

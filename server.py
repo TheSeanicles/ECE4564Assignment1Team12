@@ -9,6 +9,9 @@ import os
 from _thread import *
 import time
 import sys
+from cryptography.fernet import Fernet
+import hashlib
+import pickle
 
 with open("config.yml", "r") as ymlfile:
     cfg = yaml.safe_load(ymlfile)
@@ -46,17 +49,24 @@ def threaded_client(connection):
         data = connection.recv(socketSize)
         if not data:
             break
-        question = data.decode('utf-8')
-        print('[Server ' + str(time.time()) + '] -- Plain Text: ' + question)
-        client = wolframalpha.Client(app_id)
-        if not question:
-            break
-        res = client.query(question)
-        print('[Server ' + str(time.time()) + '] -- Sending question to WolframAlpha')
-        answer = next(res.results).text
-        print('[Server ' + str(time.time()) + '] -- Received answer from WolframAlpha: ' + answer)
-        reply = answer
-        connection.sendall(str.encode(reply))
+        (key, encryptedQuestion, hashy) = pickle.loads(data)
+        f = Fernet(key)
+        checkHashy = hashlib.md5(encryptedQuestion)
+        checkHashy = checkHashy.hexdigest()
+        encryptedQuestion = encryptedQuestion.decode("utf-8")
+        if checkHashy == hashy.decode("utf-8"):
+            notEncrypted = f.decrypt(encryptedQuestion.encode())
+            question = notEncrypted.decode("utf-8")
+            print('[Server ' + str(time.time()) + '] -- Plain Text: ' + question)
+            client = wolframalpha.Client(app_id)
+            if not question:
+                break
+            res = client.query(question)
+            print('[Server ' + str(time.time()) + '] -- Sending question to WolframAlpha')
+            answer = next(res.results).text
+            print('[Server ' + str(time.time()) + '] -- Received answer from WolframAlpha: ' + answer)
+            reply = answer
+            connection.sendall(str.encode(reply))
     connection.close()
     print ('DISCONNECTED')
 
@@ -65,5 +75,5 @@ while True:
     print('[Server ' + str(time.time()) + '] -- Accepted client connection from ' + address[0] + ' on port '+ str(address[1]))
     start_new_thread(threaded_client, (Client, ))
     ThreadCount += 1
-    print('Thread Number: ' + str(ThreadCount))
+    # print('Thread Number: ' + str(ThreadCount))
 ServerSocket.close()
