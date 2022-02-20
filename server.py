@@ -49,8 +49,11 @@ def threaded_client(connection):
         data = connection.recv(socketSize)
         if not data:
             break
-
+        print('[Server ' + str(time.time()) + '] -- Received data: ', end ='')
+        print(data)
         (key, encryptedQuestion, hashy) = pickle.loads(data)
+        print('[Server ' + str(time.time()) + '] -- Decrypt Key : ', end ='')
+        print(key)
         f = Fernet(key)
         checkHashy = hashlib.md5(encryptedQuestion)
         checkHashy = checkHashy.hexdigest()
@@ -58,28 +61,36 @@ def threaded_client(connection):
         if checkHashy == hashy.decode("utf-8"):
             notEncrypted = f.decrypt(encryptedQuestion.encode())
             question = notEncrypted.decode("utf-8")
-            print('[Server ' + str(time.time()) + '] -- Plain Text: ' + question)
-
+            print('[Server ' + str(time.time()) + '] -- Plain Text: ', end ='')
+            print(question)
             client = wolframalpha.Client(app_id)
             if not question:
                 break
             res = client.query(question)
             print('[Server ' + str(time.time()) + '] -- Sending question to WolframAlpha')
             answer = next(res.results).text
-            print('[Server ' + str(time.time()) + '] -- Received answer from WolframAlpha: ' + answer)
+            print('[Server ' + str(time.time()) + '] -- Received answer from WolframAlpha: ', end ='')
+            print(answer)
 
-            key_answer = Fernet.generate_key() # encrypt key
+            key_answer = Fernet.generate_key()
+            print('[Server ' + str(time.time()) + '] -- Encryption Key: ', end ='')
+            print(key_answer)
             f_answer = Fernet(key_answer)
-            b_answer = bytes(answer, 'utf-8') #key
-            encrypted_answer = f_answer.encrypt(b_answer) #encrypted b
-            hashy_answer = hashlib.md5(encrypted_answer) #md5 checksum
-            # print(hashy.hexdigest().encode('utf-8')) #print checksum
-            sendlist_answer = [key_answer, encrypted_answer, hashy_answer.hexdigest().encode('utf-8')] #
-            senddata_answer = pickle.dumps(sendlist_answer) #dumps sendlist
+            b_answer = bytes(answer, 'utf-8')
+            encrypted_answer = f_answer.encrypt(b_answer)
+            print('[Server ' + str(time.time()) + '] -- Cipher Text: ', end ='')
+            print(encrypted_answer)
+            hashy_answer = hashlib.md5(encrypted_answer)
+            print('[Server ' + str(time.time()) + '] -- Generated MD5 Checksum: ', end ='')
+            print(hashy_answer)
+            sendlist_answer = [key_answer, encrypted_answer, hashy_answer.hexdigest().encode('utf-8')]
+            print('[Server ' + str(time.time()) + '] -- Answer payload: ', end ='')
+            print(sendlist_answer)
+            senddata_answer = pickle.dumps(sendlist_answer)
+            print('[Server ' + str(time.time()) + '] -- Sending Answer: ', end ='')
+            print(senddata_answer)
             connection.sendall(senddata_answer)
-
     connection.close()
-    # print ('DISCONNECTED')
 
 while True:
     Client, address = ServerSocket.accept()

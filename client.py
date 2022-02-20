@@ -43,20 +43,32 @@ for tweet in tw.Paginator(client.search_recent_tweets, query=query,tweet_fields=
     tweetval = tweet.text
     refinedtweetval1 = tweetval.replace('#ECE4564T12 ', '')#these 3 remove the hashtag part and any leftover whitespaces
     refinedtweetval2 = refinedtweetval1.replace(' #ECE4564T12', '')
-    print('[Client ' + str(time.time()) + '] -- New question found: ' + refinedtweetval2)
+    print('[Client ' + str(time.time()) + '] -- New question found: ', end ='')
+    print(refinedtweetval2)
 
-    key = Fernet.generate_key() # encrypt key
+    key = Fernet.generate_key()
+    print('[Client ' + str(time.time()) + '] -- Generated Encryption Key: ', end ='')
+    print(key)
     f = Fernet(key)
-    b = bytes(refinedtweetval2, 'utf-8') #key
-    token = f.encrypt(b) #encrypted b
-    hashy = hashlib.md5(token) #md5 checksum
-    # print(hashy.hexdigest().encode('utf-8')) #print checksum
-    sendlist = [key, token, hashy.hexdigest().encode('utf-8')] #
-    senddata = pickle.dumps(sendlist) #dumps sendlist
+    b = bytes(refinedtweetval2, 'utf-8')
+    token = f.encrypt(b)
+    print('[Client ' + str(time.time()) + '] -- Cipher Text: ', end ='')
+    print(token)
+    hashy = hashlib.md5(token)
+    sendlist = [key, token, hashy.hexdigest().encode('utf-8')]
+    print('[Client ' + str(time.time()) + '] -- Question payload: ', end ='')
+    print(sendlist)
+    senddata = pickle.dumps(sendlist)
+    print('[Client ' + str(time.time()) + '] -- Sending question: ', end ='')
+    print(senddata)
     ClientSocket.send(senddata)
-    Response = ClientSocket.recv(socketSize)
 
+    Response = ClientSocket.recv(socketSize)
+    print('[Client ' + str(time.time()) + '] -- Received data: ', end ='')
+    print(Response)
     (key_response, encrypted_response, hashy_response) = pickle.loads(Response)
+    print('[Client ' + str(time.time()) + '] -- Decrypt Key: ', end ='')
+    print(key_response)
     f_response = Fernet(key_response)
     checkHashy = hashlib.md5(encrypted_response)
     checkHashy = checkHashy.hexdigest()
@@ -64,6 +76,6 @@ for tweet in tw.Paginator(client.search_recent_tweets, query=query,tweet_fields=
     if checkHashy == hashy_response.decode("utf-8"):
         notEncrypted = f_response.decrypt(encrypted_response.encode())
         answer = notEncrypted.decode("utf-8")
-    print(answer)
-
+        print('[Client ' + str(time.time()) + '] -- Plain Text: ', end ='')
+        print(answer)
     ClientSocket.close()
