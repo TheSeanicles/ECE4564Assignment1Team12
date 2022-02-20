@@ -7,7 +7,7 @@ import yaml
 import time
 import sys
 
-with open("/home/pi/ECE4564Assignment1Team12/config.yml", "r") as ymlfile:
+with open("config.yml", "r") as ymlfile:
     cfg = yaml.safe_load(ymlfile)
 
 ClientSocket = socket.socket()
