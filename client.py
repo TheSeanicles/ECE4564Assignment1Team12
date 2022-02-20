@@ -49,7 +49,7 @@ for tweet in tw.Paginator(client.search_recent_tweets, query=query,tweet_fields=
     b = bytes(refinedtweetval2, 'utf-8') #key
     token = f.encrypt(b) #encrypted b
     hashy = hashlib.md5(token) #md5 checksum
-    print(hashy.hexdigest().encode('utf-8')) #print checksum
+    # print(hashy.hexdigest().encode('utf-8')) #print checksum
     sendlist = [key, token, hashy.hexdigest().encode('utf-8')] #
     senddata = pickle.dumps(sendlist) #dumps sendlist
 
