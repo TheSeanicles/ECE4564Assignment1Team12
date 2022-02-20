@@ -49,6 +49,7 @@ def threaded_client(connection):
         data = connection.recv(socketSize)
         if not data:
             break
+
         (key, encryptedQuestion, hashy) = pickle.loads(data)
         f = Fernet(key)
         checkHashy = hashlib.md5(encryptedQuestion)
@@ -58,6 +59,7 @@ def threaded_client(connection):
             notEncrypted = f.decrypt(encryptedQuestion.encode())
             question = notEncrypted.decode("utf-8")
             print('[Server ' + str(time.time()) + '] -- Plain Text: ' + question)
+
             client = wolframalpha.Client(app_id)
             if not question:
                 break
@@ -65,11 +67,17 @@ def threaded_client(connection):
             print('[Server ' + str(time.time()) + '] -- Sending question to WolframAlpha')
             answer = next(res.results).text
             print('[Server ' + str(time.time()) + '] -- Received answer from WolframAlpha: ' + answer)
-            reply = answer
-            #
-            # TODO -- ENCRYPT ANSWER AND SEND TO CLIENT
-            #
-            connection.sendall(str.encode(reply))
+
+            key_answer = Fernet.generate_key() # encrypt key
+            f_answer = Fernet(key_answer)
+            b_answer = bytes(answer, 'utf-8') #key
+            encrypted_answer = f_answer.encrypt(b_answer) #encrypted b
+            hashy_answer = hashlib.md5(encrypted_answer) #md5 checksum
+            # print(hashy.hexdigest().encode('utf-8')) #print checksum
+            sendlist_answer = [key_answer, encrypted_answer, hashy_answer.hexdigest().encode('utf-8')] #
+            senddata_answer = pickle.dumps(sendlist_answer) #dumps sendlist
+            connection.sendall(senddata_answer)
+
     connection.close()
     # print ('DISCONNECTED')
 

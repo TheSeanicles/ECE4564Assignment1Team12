@@ -55,8 +55,15 @@ for tweet in tw.Paginator(client.search_recent_tweets, query=query,tweet_fields=
     senddata = pickle.dumps(sendlist) #dumps sendlist
     ClientSocket.send(senddata)
     Response = ClientSocket.recv(socketSize)
-    #
-    # TODO -- decrypt Response
-    #
-    print(Response.decode('utf-8'))
+
+    (key_response, encrypted_response, hashy_response) = pickle.loads(Response)
+    f_response = Fernet(key_response)
+    checkHashy = hashlib.md5(encrypted_response)
+    checkHashy = checkHashy.hexdigest()
+    encrypted_response = encrypted_response.decode("utf-8")
+    if checkHashy == hashy_response.decode("utf-8"):
+        notEncrypted = f_response.decrypt(encrypted_response.encode())
+        answer = notEncrypted.decode("utf-8")
+    print(answer)
+
     ClientSocket.close()
