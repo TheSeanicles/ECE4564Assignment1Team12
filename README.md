@@ -2,7 +2,7 @@
 
 systemd file is using location /home/pi/ECE4564Assignment1Server
 
-install wolframalpha and yaml python3 library
+Install python3 libraries
 ```
 sudo apt install python3-pip
 sudo pip3 install wolframalpha
@@ -14,27 +14,27 @@ config.yml needs created following exampleconfig.yml format
 server:
   host: 127.0.0.1
   port: 5555
-  app_id:
+  app_id:<YOUR_ID>
   socketSize: 2048
 client:
   host: 127.0.0.1
   port: 5555
-  bearer_token: 
+  bearer_token:<YOUR_TOKEN>
   socketSize: 1024
 ```
-copy assignment1Server.service to /etc/systemd/system
+Copy assignment1Server.service to /etc/systemd/system
 ```
 cp assignment1Server.service /etc/systemd/system
 ```
-reload systemd daemon
+Reload systemd daemon
 ```
 sudo systemctl daemon-reload
 ```
-enable service
+Enable service
 ```
 sudo systemctl enable assignment1Server.service
 ```
-start service
+Start service
 ```
 sudo systemctl start assignment1Server.service
 ```
