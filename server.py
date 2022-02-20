@@ -66,9 +66,12 @@ def threaded_client(connection):
             answer = next(res.results).text
             print('[Server ' + str(time.time()) + '] -- Received answer from WolframAlpha: ' + answer)
             reply = answer
+            #
+            # TODO -- ENCRYPT ANSWER AND SEND TO CLIENT
+            #
             connection.sendall(str.encode(reply))
     connection.close()
-    print ('DISCONNECTED')
+    # print ('DISCONNECTED')
 
 while True:
     Client, address = ServerSocket.accept()

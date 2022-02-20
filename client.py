@@ -27,6 +27,7 @@ if len(sys.argv) > 1:
 try:
     ClientSocket.connect((host, port))
     print('[Client ' + str(time.time()) + '] -- Connecting to ' + host + ' on port ' + str(port))
+    Response = ClientSocket.recv(socketSize)
 except socket.error as e:
     print(str(e))
 
@@ -53,10 +54,9 @@ for tweet in tw.Paginator(client.search_recent_tweets, query=query,tweet_fields=
     sendlist = [key, token, hashy.hexdigest().encode('utf-8')] #
     senddata = pickle.dumps(sendlist) #dumps sendlist
     ClientSocket.send(senddata)
-
-    # print('Waiting for connection')
     Response = ClientSocket.recv(socketSize)
-    # Input = refinedtweetval2
-    # ClientSocket.send(str.encode(Input))
+    #
+    # TODO -- decrypt Response
+    #
     print(Response.decode('utf-8'))
     ClientSocket.close()
