@@ -5,7 +5,7 @@
 import yaml
 import wolframalpha
 import socket
-import os
+# import os
 from _thread import *
 import time
 import sys
