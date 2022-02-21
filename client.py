@@ -17,11 +17,11 @@ socketSize = cfg["client"]["socketSize"]
 
 if len(sys.argv) > 1:
     for argument in sys.argv:
-        if str(argument) == '-sp':
-            pass
-            port = sys.argv[sys.argv.index(argument) + 1]
+        if str(argument) == '-sip':
+            host = sys.argv[sys.argv.index(argument) + 1]
+        elif str(argument) == '-sp':
+            port = int(sys.argv[sys.argv.index(argument) + 1])
         elif str(argument) == '-z':
-            pass
             socketSize = sys.argv[sys.argv.index(argument) + 1]
 
 try:
