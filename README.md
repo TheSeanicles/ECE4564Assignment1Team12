@@ -8,7 +8,7 @@ sudo apt install python3-pip
 sudo pip3 install wolframalpha
 sudo pip3 install pyyaml
 sudo pip3 install tweepy
-sudo pip3 install fernet
+sudo pip3 install cryptography
 ```
 config.yml needs created following exampleconfig.yml format
 ```
